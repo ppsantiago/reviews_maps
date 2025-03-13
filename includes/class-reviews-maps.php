@@ -81,6 +81,9 @@ class Reviews_Maps {
         $this->loader->add_action('admin_init', $plugin_admin_options, 'register_settings');
         $this->loader->add_action('admin_post_reviews_maps_manual_update', $plugin_admin_options, 'handle_manual_update');
         $this->loader->add_action('admin_post_reviews_maps_test_api', $plugin_admin_options, 'handle_test_api');
+        
+        // Hook para mostrar mensajes de admin
+        $this->loader->add_action('admin_notices', $plugin_admin_options, 'show_admin_notices');
     }
 
     /**
@@ -97,8 +100,8 @@ class Reviews_Maps {
      * Registrar los hooks relacionados con las tareas programadas
      */
     private function define_cron_hooks() {
-        $places_api = new Reviews_Maps_Places_API($this->get_plugin_name(), $this->get_version());
-        $this->loader->add_action('reviews_maps_daily_update', $places_api, 'update_existing_reviews');
+        // Registrar el hook para la actualización programada
+        add_action('reviews_maps_daily_update', array($this, 'run_scheduled_review_update'));
     }
 
     /**
@@ -127,5 +130,33 @@ class Reviews_Maps {
      */
     public function get_version() {
         return $this->version;
+    }
+
+    /**
+     * Ejecutar la actualización programada de reseñas
+     *
+     * @since 1.0.0
+     */
+    public function run_scheduled_review_update() {
+        error_log('Reviews Maps: Iniciando actualización programada de reseñas');
+        
+        // Crear una instancia de Places API si no existe
+        if (!isset($this->places_api)) {
+            $this->places_api = new Reviews_Maps_Places_API($this->get_plugin_name(), $this->get_version());
+            error_log('Reviews Maps: Instancia de Places API creada para la actualización programada');
+        }
+        
+        // Establecer que solo queremos añadir reseñas, no reemplazarlas, y obtener hasta 50
+        $add_only = true;
+        $limit = 50;
+        $updated = $this->places_api->update_existing_reviews($add_only, $limit);
+        
+        if (is_wp_error($updated)) {
+            error_log('Reviews Maps: Error en actualización programada - ' . $updated->get_error_message());
+        } else if ($updated === false) {
+            error_log('Reviews Maps: Actualización programada verificada, no fue necesario actualizar');
+        } else {
+            error_log('Reviews Maps: Actualización programada completada. Reseñas añadidas: ' . $updated);
+        }
     }
 } 
