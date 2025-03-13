@@ -3,4 +3,75 @@
  */
 .reviews-maps-public {
     /* Estilos básicos para el área pública */
+}
+
+.reviews-maps-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.reviews-maps-last-update {
+    text-align: right;
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+}
+
+.reviews-maps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.reviews-maps-review {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.2s ease;
+}
+
+.reviews-maps-review:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.reviews-maps-review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.reviews-maps-review-author {
+    font-weight: 600;
+    color: #333;
+}
+
+.reviews-maps-review-rating {
+    color: #ffd700;
+    font-size: 1.2em;
+}
+
+.reviews-maps-review-content {
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.reviews-maps-review-date {
+    color: #999;
+    font-size: 0.9em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .reviews-maps-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .reviews-maps-container {
+        padding: 10px;
+    }
 } 

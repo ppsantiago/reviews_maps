@@ -29,6 +29,8 @@ class Reviews_Maps {
         $this->set_locale();
         $this->define_admin_hooks();
         $this->define_public_hooks();
+        $this->define_cron_hooks();
+        $this->check_updates();
     }
 
     /**
@@ -39,11 +41,21 @@ class Reviews_Maps {
         require_once REVIEWS_MAPS_PLUGIN_DIR . 'includes/class-reviews-maps-i18n.php';
         require_once REVIEWS_MAPS_PLUGIN_DIR . 'includes/class-reviews-maps-activator.php';
         require_once REVIEWS_MAPS_PLUGIN_DIR . 'includes/class-reviews-maps-deactivator.php';
+        require_once REVIEWS_MAPS_PLUGIN_DIR . 'includes/class-reviews-maps-places-api.php';
+        require_once REVIEWS_MAPS_PLUGIN_DIR . 'includes/class-reviews-maps-updater.php';
         require_once REVIEWS_MAPS_PLUGIN_DIR . 'admin/class-reviews-maps-admin.php';
         require_once REVIEWS_MAPS_PLUGIN_DIR . 'admin/class-reviews-maps-admin-options.php';
         require_once REVIEWS_MAPS_PLUGIN_DIR . 'public/class-reviews-maps-public.php';
 
         $this->loader = new Reviews_Maps_Loader();
+    }
+
+    /**
+     * Verificar actualizaciones del plugin
+     */
+    private function check_updates() {
+        $updater = new Reviews_Maps_Updater($this->plugin_name, $this->version);
+        $updater->check_updates();
     }
 
     /**
@@ -67,6 +79,8 @@ class Reviews_Maps {
         // Hooks para la página de opciones
         $this->loader->add_action('admin_menu', $plugin_admin_options, 'add_plugin_admin_menu');
         $this->loader->add_action('admin_init', $plugin_admin_options, 'register_settings');
+        $this->loader->add_action('admin_post_reviews_maps_manual_update', $plugin_admin_options, 'handle_manual_update');
+        $this->loader->add_action('admin_post_reviews_maps_test_api', $plugin_admin_options, 'handle_test_api');
     }
 
     /**
@@ -76,6 +90,15 @@ class Reviews_Maps {
         $plugin_public = new Reviews_Maps_Public($this->get_plugin_name(), $this->get_version());
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+        $this->loader->add_action('init', $plugin_public, 'register_shortcodes');
+    }
+
+    /**
+     * Registrar los hooks relacionados con las tareas programadas
+     */
+    private function define_cron_hooks() {
+        $places_api = new Reviews_Maps_Places_API($this->get_plugin_name(), $this->get_version());
+        $this->loader->add_action('reviews_maps_daily_update', $places_api, 'update_existing_reviews');
     }
 
     /**

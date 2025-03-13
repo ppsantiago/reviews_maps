@@ -4,11 +4,13 @@
  */
 class Reviews_Maps_Deactivator {
     /**
-     * No eliminamos la tabla ni las opciones al desactivar
-     * Solo limpiamos la caché si es necesario
+     * Limpiar las tareas programadas y las opciones del plugin
      */
     public static function deactivate() {
-        // Limpiar cualquier caché temporal si existe
-        wp_cache_delete('reviews_maps_cache', 'options');
+        // Limpiar el cron job
+        wp_clear_scheduled_hook('reviews_maps_daily_update');
+        
+        // Eliminar las opciones del plugin
+        delete_option('reviews_maps_options');
     }
 } 

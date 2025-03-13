@@ -4,8 +4,18 @@
 (function($) {
     'use strict';
 
+    // Documento listo
     $(document).ready(function() {
-        // Código JavaScript para el área pública
+        // Inicializar funcionalidades
+        initReviewsMaps();
     });
+
+    /**
+     * Inicializar las funcionalidades del plugin
+     */
+    function initReviewsMaps() {
+        // Aquí podemos agregar funcionalidades adicionales en el futuro
+        // Por ejemplo, filtros, ordenamiento, etc.
+    }
 
 })(jQuery); 
