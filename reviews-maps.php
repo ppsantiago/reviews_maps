@@ -1,11 +1,10 @@
 <?php
 /**
  * Plugin Name: Reviews Maps
- * Plugin URI: https://tudominio.com/reviews-maps
+ * Plugin URI: 
  * Description: Un plugin para mostrar reseñas en mapas interactivos
  * Version: 1.0.0
- * Author: Tu Nombre
- * Author URI: https://tudominio.com
+ * Author: ppsantiago & ManuArce
  * Text Domain: reviews-maps
  * Domain Path: /languages
  */
